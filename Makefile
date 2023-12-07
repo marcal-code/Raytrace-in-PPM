@@ -2,11 +2,11 @@
 CC = g++
 CFLAGS = -std=c++17
 
-SOURCES = ./main.cpp \
-		  ./image.cpp \
-		  ./util.cpp \
-		  ./geometry.cpp \
-		  ./renderer.cpp
+SOURCES = ./src/main.cpp \
+		  ./src/image.cpp \
+		  ./src/util.cpp \
+		  ./src/geometry.cpp \
+		  ./src/renderer.cpp
 
 EXECUTABLE = raytrasor.exe
 
