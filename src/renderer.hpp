@@ -3,6 +3,7 @@
 #include "geometry.hpp"
 #include "image.hpp"
 #include "util.hpp"
+#include "scene.hpp"
 
 class Renderer {
 
@@ -10,8 +11,8 @@ class Renderer {
 
   public:
 
-    Renderer(Image *image)
-      :image(image) {}
+    Renderer(Image *image, Scene scene)
+	:image(image), scene(scene) {}
 
     void render();
     util::Color evalPixel(util::Vec2 coord);
@@ -19,4 +20,5 @@ class Renderer {
   private:
 
     Image *image;
+    Scene scene;
 };

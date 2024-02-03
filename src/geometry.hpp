@@ -10,11 +10,14 @@ struct Ray {
 
     // Equation for a point on ray: P(x,y,z) = O(x,y,z) + D(x,y,z) * t
 
-    Ray(util::Vec3 origin, util::Vec3 direction)
-        : origin(origin), direction(util::Vec3::normalize(direction)) {}
+    // here I'm converting the direction to be unit vector
+    // it might be bad for performance but easy to understand
 
-    util::Vec3  origin;
-    util::Vec3  direction;
+    Ray(util::Vec3 origin, util::Vec3 direction)
+	: origin(origin), direction(util::Vec3::normalize(direction)) {}
+
+    util::Vec3 origin;
+    util::Vec3 direction;
 };
 
 struct Sphere {

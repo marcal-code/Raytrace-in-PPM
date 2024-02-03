@@ -11,18 +11,18 @@ class Image {
 
   public:
 
-    Image(uint32_t width, uint32_t height, std::string name);
+    Image(size_t width, size_t height, std::string name);
 
-    void putPixel(uint32_t x, uint32_t y, util::Color c);
+    void putPixel(size_t x, size_t y, util::Color c);
 
     int writePPM() const;
 
-    uint32_t getImageWidth() const;
-    uint32_t getImageHeight() const;
+    size_t getImageWidth() const;
+    size_t getImageHeight() const;
 
   private:
 
     uint32_t image_w, image_h;
-    std::string fileName;
+    std::string file_name;
     std::vector<std::vector<util::Color>> image;
 };

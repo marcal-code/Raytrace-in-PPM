@@ -1,6 +1,6 @@
 
 CC = g++
-CFLAGS = -std=c++17
+CFLAGS = -std=c++17 -Wall -Wextra -Werror
 
 SOURCES = ./src/main.cpp \
 		  ./src/image.cpp \

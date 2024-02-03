@@ -5,8 +5,6 @@
 #include "image.hpp"
 #include "util.hpp"
 
-#include <memory>
-
 void Renderer::render() {
 
     float aspect_ratio = (float)image->getImageWidth() /
@@ -36,31 +34,48 @@ void Renderer::render() {
 
 util::Color Renderer::evalPixel(util::Vec2 coord) {
 
-    // Camera facing the scene
-    Geometry::Ray ray(util::Vec3(0.0f, 0.0f, -1.0f),
-                      util::Vec3(coord.x, coord.y, 1.0f));
+    // virtual camera position
+    util::Vec3 camera_pos(0.0f, 0.0f, -5.0f);
 
-    Geometry::Sphere sphere(util::Vec3(0.0f, 0.0f, 0.0f), 0.5f,
-                             util::Color(0.60f, 0.2f, 0.93f));
+    // the FOV 
+    float focal_point = 1.0f;
 
-    util::Vec3 light_dir =
-        util::Vec3::normalize(util::Vec3(-1.0f, -1.0f, -1.0f));
+    // the ray from the focal point towards the scene
+    util::Vec3 ray_dir(coord.x, coord.y, focal_point);
 
-    float hit_dist = sphere.intersects(ray);
+    // figures out what need to be rendered without streching image
+    ray_dir = util::Vec3::normalize(ray_dir - camera_pos);
 
-    if (hit_dist != -1.0f) {
+    // the actual camera when the calculation are done regarding FOV
+    Geometry::Ray camera(camera_pos, ray_dir);
 
-        util::Vec3 hit_point = ray.origin + ray.direction * hit_dist;
-        util::Vec3 hit_point_normal = util::Vec3::normalize(hit_point);
+    // Geometry::Ray camera(util::Vec3(0.0f, 0.0f, -1.0f),
+    //                      util::Vec3(coord.x, coord.y, 1.0f));
 
-        // dot product gives angle between two vectors by |a|*|b|*cos(angle)
-        // here a and b are normalized so float f -> cos(angle)
-        float f = util::Vec3::dot(hit_point_normal, light_dir);
+    for (auto &sphere : scene.spheres) {
 
-        util::Color color = sphere.material * f;
+        float hit_dist = sphere.intersects(camera);
 
-        return util::Color(color);
-    } 
+        if (hit_dist != -1.0f) {
 
-    return util::Color(0.0f, 0.0f, 0.0f);
+            util::Vec3 hit_point = camera.origin + camera.direction * hit_dist;
+            util::Vec3 hit_point_normal = util::Vec3::normalize(hit_point - sphere.center);
+
+            // dot product gives angle between two vectors by |a|*|b|*cos(angle)
+            // here a and b are normalized so float f -> cos(angle)
+            float f = util::Vec3::dot(hit_point_normal, scene.light_dir * -1);
+
+            // Note: the light direction will be opposite
+            // to what is specified because the angle in cos(a)
+            // util::Color color = (hit_point * 1.5f)* f;
+            // util::Color color = (hit_point + util::Vec3(1.0f, 1.0f, 1.0f) / 2) * f;
+            util::Color color = sphere.material * f;
+
+            return util::Color(color);
+        }
+        
+    }
+
+    return util::Color(coord.x, coord.y, 0.5f);
+    // return util::Color(0.0f, 0.0f, 0.0f);
 }

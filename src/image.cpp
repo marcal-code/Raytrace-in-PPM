@@ -8,52 +8,51 @@
 #include <string>
 #include <vector>
 
-Image::Image(uint32_t width, uint32_t height, std::string name)
-    : image_w(width), image_h(height), image(height, std::vector<util::Color>(width)),
-      fileName(name + ".ppm") {}
+Image::Image(size_t width, size_t height, std::string name)
+    : image_w(width), image_h(height), file_name(name + ".ppm"),
+      image(height, std::vector<util::Color>(width)) {}
 
-void Image::putPixel(uint32_t x, uint32_t y, util::Color color) {
+void Image::putPixel(size_t x, size_t y, util::Color color) {
 
-    if (x > image_w - 1 || y > image_h - 1 || x < 0 || y < 0) {
+    if (x > image_w - 1 || y > image_h - 1) {
 
         std::cerr << "out of bound pixel allocation: "
                   << "( x:" << x << " , y:" << y << " )" << "\n";
         return;
     }
 
-    // color.print();
     image[y][x] = color;
 }
 
 int Image::writePPM() const {
 
-    std::ofstream imgFile(fileName);
-    if (!imgFile.is_open()) {
+    std::ofstream img_file(file_name);
+    if (!img_file.is_open()) {
 
-        std::cerr << "No such imgFile opened: imgFile in Image::writePPM";
+        std::cerr << "Couldnt not open " << file_name << " in Image::writePPM";
         return -1;
     }
 
-    imgFile << "P3 " << image_w << " " << image_h << "\n255\n";
+    img_file << "P3 " << image_w << " " << image_h << "\n255\n";
 
     for (const auto &row : image) {
 
         for (const auto &color : row) {
 
-            imgFile << (int)color.r << " " << (int)color.g << " "
+            img_file << (int)color.r << " " << (int)color.g << " "
                     << (int)color.b << " ";
         }
 
-        imgFile << "\n";
+        img_file << "\n";
     }
 
     return 0;
 }
 
-uint32_t Image::getImageWidth() const {
+size_t Image::getImageWidth() const {
     return image_w;
 }
 
-uint32_t Image::getImageHeight() const {
+size_t Image::getImageHeight() const {
     return image_h;
 }
